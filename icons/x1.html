@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vind Icon Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #4285F4;
+            text-align: center;
+        }
+        .preview {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+        .icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .icon-preview {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        .icon-label {
+            font-weight: 500;
+            margin-top: 5px;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+        }
+        label {
+            width: 120px;
+            font-weight: 500;
+        }
+        input[type="color"] {
+            width: 60px;
+            height: 30px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+        button {
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            margin: 5px;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #3367D6;
+        }
+        .download-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .instructions {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Vind Icon Generator</h1>
+        
+        <div class="preview">
+            <div class="icon">
+                <div class="icon-preview">
+                    <svg id="preview-16" width="16" height="16" xmlns="http://www.w3.org/2000/svg"></svg>
+                </div>
+                <div class="icon-label">16x16</div>
+            </div>
+            <div class="icon">
+                <div class="icon-preview">
+                    <svg id="preview-48" width="48" height="48" xmlns="http://www.w3.org/2000/svg"></svg>
+                </div>
+                <div class="icon-label">48x48</div>
+            </div>
+            <div class="icon">
+                <div class="icon-preview">
+                    <svg id="preview-128" width="128" height="128" xmlns="http://www.w3.org/2000/svg"></svg>
+                </div>
+                <div class="icon-label">128x128</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="bgColor">Background Color:</label>
+                <input type="color" id="bgColor" value="#4285F4">
+            </div>
+            <div class="control-group">
+                <label for="textColor">Text Color:</label>
+                <input type="color" id="textColor" value="#ffffff">
+            </div>
+            <div class="control-group">
+                <label for="text">Text:</label>
+                <input type="text" id="text" value="V">
+            </div>
+        </div>
+        
+        <div class="download-buttons">
+            <button id="download16">Download 16x16</button>
+            <button id="download48">Download 48x48</button>
+            <button id="download128">Download 128x128</button>
+            <button id="downloadAll">Download All</button>
+        </div>
+        
+        <div class="instructions">
+            <h3>How to use:</h3>
+            <ol>
+                <li>Customize the icon using the controls above</li>
+                <li>Click the download buttons to save the icons</li>
+                <li>Save the icons in your extension's "icons" folder with these names:
+                    <ul>
+                        <li>icon16.png (16x16)</li>
+                        <li>icon48.png (48x48)</li>
+                        <li>icon128.png (128x128)</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const bgColor = document.getElementById('bgColor');
+        const textColor = document.getElementById('textColor');
+        const textInput = document.getElementById('text');
+        const preview16 = document.getElementById('preview-16');
+        const preview48 = document.getElementById('preview-48');
+        const preview128 = document.getElementById('preview-128');
+        
+        function updateIcons() {
+            const bg = bgColor.value;
+            const text = textInput.value;
+            const color = textColor.value;
+            
+            updateIcon(preview16, 16, bg, text, color, 10);
+            updateIcon(preview48, 48, bg, text, color, 20);
+            updateIcon(preview128, 128, bg, text, color, 36);
+        }
+        
+        function updateIcon(svg, size, bg, text, color, fontSize) {
+            const radius = size > 32 ? 5 : 3;
+            svg.innerHTML = `
+                <rect width="${size}" height="${size}" fill="${bg}" rx="${radius}"/>
+                <text x="${size/2}" y="${size/2 + fontSize/3}" font-family="Arial" font-size="${fontSize}" 
+                    font-weight="bold" fill="${color}" text-anchor="middle">${text}</text>
+            `;
+        }
+        
+        function downloadIcon(size, filename) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // Draw background
+            ctx.fillStyle = bgColor.value;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Draw text
+            ctx.fillStyle = textColor.value;
+            ctx.font = `bold ${size > 32 ? size/2.5 : size/1.6}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(textInput.value, size/2, size/2);
+            
+            // Create download link
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Event listeners
+        bgColor.addEventListener('input', updateIcons);
+        textColor.addEventListener('input', updateIcons);
+        textInput.addEventListener('input', updateIcons);
+        
+        document.getElementById('download16').addEventListener('click', () => downloadIcon(16, 'icon16.png'));
+        document.getElementById('download48').addEventListener('click', () => downloadIcon(48, 'icon48.png'));
+        document.getElementById('download128').addEventListener('click', () => downloadIcon(128, 'icon128.png'));
+        
+        document.getElementById('downloadAll').addEventListener('click', () => {
+            downloadIcon(16, 'icon16.png');
+            setTimeout(() => downloadIcon(48, 'icon48.png'), 100);
+            setTimeout(() => downloadIcon(128, 'icon128.png'), 200);
+        });
+        
+        // Initialize
+        updateIcons();
+    </script>
+</body>
+</html>
